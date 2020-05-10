@@ -1,0 +1,27 @@
+.checkbox {
+    display: inline-block;
+    &.checked > .checkbox__label::before {
+        content: "";
+        width: 7px;
+        height: 10px;
+        border: 2px solid rgba($color: #fff, $alpha: 0.6);
+        border-left: none;
+        border-top: none;
+        transform: rotate(40deg);
+        position: absolute;
+    }
+
+    &__label {
+        width: 16px;
+        height: 16px;
+        background-color: #3c424a;
+        border-radius: 2px;
+        box-shadow: 0 0 2px rgba($color: #000, $alpha: 0.9);
+        display: inline-block;
+        position: relative;
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        cursor: pointer;
+    }
+}

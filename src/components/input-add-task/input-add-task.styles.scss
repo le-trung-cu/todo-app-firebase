@@ -1,0 +1,18 @@
+.input-add-task {
+    &__icon {
+        position: absolute;
+        margin-top: 8px;
+        margin-left: 9px;
+    }
+    &__input {
+        padding: 6px 39px;
+        font-size: 14px;
+        height: 39px;
+        background-color: #343a40;
+        border: none;
+        width: 100%;
+        border-radius: 5px;
+        color: rgba($color: #fff, $alpha: .9);
+        margin-bottom: 12px;
+    }
+}

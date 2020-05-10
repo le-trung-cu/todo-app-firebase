@@ -1,0 +1,43 @@
+.todo-item {
+    padding: 10px 5px;
+    display: flex;
+    position: relative;
+    border-radius: 7px;
+    &:nth-child(2n) {
+        background-color: #1716160f;
+    }
+    &__pin {
+        position: absolute;
+        left: -20px;
+        top: -11px;
+        color: #f06292;
+    }
+    &__box {
+        display: inline-block;
+        margin-left: 12px;
+        flex-grow: 1;
+    }
+    &__main {
+        color: rgba($color: #fff, $alpha: 0.6);
+        font-size: 14px;
+        font-weight: 500;
+    }
+    &__menu-btn {
+        border-radius: 50%;
+        height: 32px;
+        width: 32px;
+        transition: all 0.3s;
+        &:hover {
+            background-color: rgba($color: #7c7b7b, $alpha: 0.9);
+        }
+        &:focus {
+            outline: none;
+        }
+    }
+    &__menu-dropdown {
+    }
+    &__sub {
+        color: rgba($color: #fff, $alpha: 0.4);
+        font-size: 12px;
+    }
+}

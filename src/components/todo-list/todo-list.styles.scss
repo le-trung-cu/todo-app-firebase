@@ -1,0 +1,9 @@
+.todo__list{
+    padding-bottom: 10px;
+
+    &--pin{
+        border-bottom: 1px solid #5a595994;
+        box-shadow: 0px 6px 5px -8px #a3a1a1;
+        margin-bottom: 20px;
+    }
+}

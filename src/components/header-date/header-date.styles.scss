@@ -1,0 +1,22 @@
+.header-date {
+    width: 200px;
+    margin: 0px auto 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__next-day{
+        order: -1;
+    }
+    &__content {
+        text-align: center;
+    }
+    &__main {
+        color: rgba($color: #fff, $alpha: .9);
+        font-weight: 500;
+        font-size: 24px;
+    }
+    &__sub {
+        color: #4e555f;
+        font-size: 12px;
+    }
+}

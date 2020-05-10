@@ -1,0 +1,16 @@
+.navigation {
+    
+    border-bottom: 2px solid rgba($color: #282c31, $alpha: .2);
+    &__item {
+        border-bottom: 3px solid #f06292;
+        padding: 5px 10px;
+        margin: 0 10px;
+    }
+    &__link {
+        color: #4e555f;
+    }
+    &__list {
+        display: flex;
+    justify-content: center;
+    }
+}

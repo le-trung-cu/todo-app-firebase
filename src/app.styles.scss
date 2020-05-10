@@ -1,0 +1,26 @@
+.app-wrap{
+    background: linear-gradient(-11deg, #dc608a 61%, #f06292 60%);
+    min-height: 100vh;
+    @media screen and (min-width: 500px){
+        padding: 5vh 0 50px;
+    }
+}
+
+.app{
+    background-color: #3c424a;
+    max-width: 500px;
+    margin: auto;
+    min-height: 100vh;
+    @media screen and (min-width: 500px){
+        border-radius: 5px;
+        min-height:  500px;
+        box-shadow: 2px 3px 10px 5px #00000094;
+    }
+}
+
+.main{
+    padding: 30px;
+    @media screen and(min-width: 500px) {
+        padding: 48px;
+    }
+}
