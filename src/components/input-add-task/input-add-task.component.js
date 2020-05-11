@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import './input-add-task.styles.scss';
 
-const InputAddTask = ({handleAddTask}) => {
+const InputAddTask = ({ handleAddTask, dateQuery }) => {
+
     const [taskTitle, setTaskTitle] = useState('');
     const handelAddTaskSubmit = (event) => {
         event.preventDefault();
-        handleAddTask({title: taskTitle})
+        handleAddTask({
+            createdAt: dateQuery,
+            isCompleted: false,
+            title: taskTitle,
+            description: "one of my goals in 2017",
+            isPin: false
+        })
     }
     return (
         <form onSubmit={handelAddTaskSubmit} className="input-add-task"

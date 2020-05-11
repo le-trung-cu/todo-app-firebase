@@ -1,16 +1,23 @@
 .navigation {
-    
-    border-bottom: 2px solid rgba($color: #282c31, $alpha: .2);
+    border-bottom: 2px solid rgba($color: #282c31, $alpha: 0.2);
     &__item {
-        border-bottom: 3px solid #f06292;
+        border-bottom: 3px solid transparent;
         padding: 5px 10px;
         margin: 0 10px;
+        transition: all .3s;
+        &:hover{
+            border-bottom: 3px solid #f06292;
+        }
     }
     &__link {
-        color: #4e555f;
+        color: #c5c7ca;
+        &--disabled {
+            cursor: no-drop;
+            color: #5757574d;
+        }
     }
     &__list {
         display: flex;
-    justify-content: center;
+        justify-content: center;
     }
 }

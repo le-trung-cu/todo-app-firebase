@@ -11,10 +11,13 @@ import { createUserProfileDocument, auth, tasksContext } from './firebase/fireba
 class App extends Component {
   constructor() {
     super();
-    this.state = { currentUser: null}
+    this.state = { currentUser: null, dateQuery: ''}
     this.unSubscribe = null;
   }
-
+  handleChangeDateQuery = (dateQuery) =>{
+    console.log('.....sss', dateQuery)
+    this.setState({dateQuery});
+  }
   componentDidMount() {
     this.unSubscribe = auth.onAuthStateChanged(async userFromProvider => {
       if (userFromProvider) {
@@ -47,7 +50,7 @@ class App extends Component {
             <div className="app">
               <Header currentUser={this.state.currentUser} />
               <Route exact path='/'>
-                <PageDayTodo/>
+                <PageDayTodo handleChangeDateQuery={this.handleChangeDateQuery} dateQuery={this.state.dateQuery}/>
               </Route>
               <Route exact path='/sign-in'>
                 {this.state.currentUser ? <Redirect to='/' /> : <SignIn />}

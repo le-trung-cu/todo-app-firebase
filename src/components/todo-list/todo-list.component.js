@@ -7,7 +7,7 @@ const TodoList = ({ pinTask, tasks, handleCompleteTask, handlePinTask,handleDele
     return (
         <ul className={`todo__list${pinTask?' todo__list--pin':''}`}>
             {
-                tasks.map((item, index) => <TodoItem key={index} task={item}
+                tasks.map((item, index) => <TodoItem key={item.id} task={item}
                 handleCompleteTask={() => handleCompleteTask(item)}
                 handlePinTask={() => handlePinTask(item)}
                 handleDeleteTask={() => handleDeleteTask(item)}/>)

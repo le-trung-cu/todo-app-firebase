@@ -2,34 +2,73 @@ import React, { Component } from 'react';
 import HeaderDate from '../components/header-date/header-date.component';
 import InputAddTask from '../components/input-add-task/input-add-task.component';
 import TodoList from '../components/todo-list/todo-list.component';
-
-const todosInit = [{
-    id: 1,
-    isCompleted: false,
-    title: 'Getting an invite for',
-    description: "one of my goals in 2017",
-    isPin: false
-},
-{
-    id: 2,
-    isCompleted: true,
-    title: 'Getting an invite for',
-    description: "one of my goals in 2017",
-    isPin: false
-},
-{
-    id: 3,
-    isCompleted: true,
-    title: 'Getting an invite for',
-    description: "one of my goals in 2017",
-    isPin: false
-}];
+import { addTask, tasksContext, auth } from '../firebase/firebase.utils';
 
 class PageDayTodo extends Component {
-    constructor() {
-        super();
-        this.state = { tasks: todosInit, taskPins: [] };
+    constructor(props) {
+        super(props);
+        this.state = { tasks: [], taskPins: [], dateQuery: '', firstFetch: true };
+        this.unSubscribe = null;
+        this.unSubscribeTaskSnapshot = null;
     }
+
+    updateTasks = () => {
+        this.unSubscribeTaskSnapshot = tasksContext()
+            .where('task.createdAt', '==', this.state.dateQuery)
+            .onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    let task = change.doc.data().task;
+                    if (change.type === "added") {
+                        task = { ...task, id: change.doc.id }
+                        this.setState({ tasks: [...this.state.tasks, task] });
+                    }
+                    if (change.type === "modified") {
+                        console.log("Modified city: ", change.doc.data());
+                    }
+                    if (change.type === "removed") {
+                        console.log("Removed city: ", change.doc.data());
+                    }
+                });
+            });
+    }
+
+    componentDidMount() {
+        this.unSubscribe = auth.onAuthStateChanged(async userFromProvider => {
+            if (userFromProvider) {
+                let taskDocs = await tasksContext()
+                    .where('task.createdAt', '==', this.state.dateQuery)
+                    .get();
+                let tasks = [];
+                for (let element of taskDocs.docs) {
+                    tasks.push({ ...element.data().task, id: element.id });
+                }
+                this.setState({ tasks })
+            }
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (auth.currentUser) {
+
+            if (prevState.dateQuery !== this.state.dateQuery || this.state.firstFetch) {
+                console.log('componentDidUpdate')
+
+                this.unSubscribe();
+                if (this.unSubscribeTaskSnapshot) {
+                    this.unSubscribeTaskSnapshot();
+                }
+                this.setState({ tasks: [] });
+                this.updateTasks();
+                this.setState({ firstFetch: false });
+            }
+        }
+    }
+
+    componentWillUnmount() {
+        this.unSubscribe();
+        this.unSubscribeTaskSnapshot();
+    }
+
 
     handleCompleteTask = (task) => {
         const func = (item) => {
@@ -53,7 +92,8 @@ class PageDayTodo extends Component {
     }
 
     handleAddTask = (task) => {
-        this.setState({ tasks: [task, ...this.state.tasks] });
+        // this.setState({ tasks: [task, ...this.state.tasks] });
+        addTask(task);
     }
 
     handlePinTask = (task) => {
@@ -73,21 +113,26 @@ class PageDayTodo extends Component {
     handleDeleteTask = (task) => {
         console.log('handle delete task');
         if (task.isPin) {
-            let taskPins = this.state.taskPins.filter(item => item != task);
+            let taskPins = this.state.taskPins.filter(item => item !== task);
             this.setState({ taskPins });
         } else {
-            let tasks = this.state.tasks.filter(item => item != task);
+            let tasks = this.state.tasks.filter(item => item !== task);
             this.setState({ tasks });
         }
     }
 
+    handleChangeDateQuery = (dateQuery) => {
+        this.setState({ dateQuery });
+    }
+
 
     render() {
+
         return (
             <div>
                 <main className="main">
-                    <HeaderDate />
-                    <InputAddTask handleAddTask={this.handleAddTask} />
+                    <HeaderDate handleChangeDateQuery={this.handleChangeDateQuery} />
+                    <InputAddTask handleAddTask={this.handleAddTask} dateQuery={this.state.dateQuery} />
                     <div className="todo">
                         <ul className="todo__list-pin"></ul>
                         <TodoList pinTask={true} tasks={this.state.taskPins}
