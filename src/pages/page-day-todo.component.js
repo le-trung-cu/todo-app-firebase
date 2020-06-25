@@ -2,82 +2,44 @@ import React, { Component } from 'react';
 import HeaderDate from '../components/header-date/header-date.component';
 import InputAddTask from '../components/input-add-task/input-add-task.component';
 import TodoList from '../components/todo-list/todo-list.component';
-import { addTask, tasksContext, auth } from '../firebase/firebase.utils';
+import { addTask, tasksContext, auth, updateTask, deleteTask } from '../firebase/firebase.utils';
 
 class PageDayTodo extends Component {
     constructor(props) {
         super(props);
-        this.state = { tasks: [], taskPins: [], dateQuery: '', firstFetch: true };
+        this.state = { tasks: [], taskPins: [], dateQuery: '' };
         this.unSubscribe = null;
         this.unSubscribeTaskSnapshot = null;
-    }
-
-    updateTasks = () => {
-        this.unSubscribeTaskSnapshot = tasksContext()
-            .where('task.createdAt', '==', this.state.dateQuery)
-            .onSnapshot(snapshot => {
-                snapshot.docChanges().forEach(change => {
-                    let task = change.doc.data().task;
-                    if (change.type === "added") {
-                        task = { ...task, id: change.doc.id }
-                        this.setState({ tasks: [...this.state.tasks, task] });
-                    }
-                    if (change.type === "modified") {
-                        console.log("Modified city: ", change.doc.data());
-                    }
-                    if (change.type === "removed") {
-                        console.log("Removed city: ", change.doc.data());
-                    }
-                });
-            });
     }
 
     componentDidMount() {
         this.unSubscribe = auth.onAuthStateChanged(async userFromProvider => {
             if (userFromProvider) {
                 let taskDocs = await tasksContext()
-                    .where('task.createdAt', '==', this.state.dateQuery)
+                    .where('createdAt', '==', this.state.dateQuery)
                     .get();
                 let tasks = [];
                 for (let element of taskDocs.docs) {
-                    tasks.push({ ...element.data().task, id: element.id });
+                    tasks.push({ ...element.data(), id: element.id });
                 }
-                this.setState({ tasks })
+                this.setState({ tasks: tasks.filter(t => t.isPin === false) });
+                this.setState({ taskPins: tasks.filter(t => t.isPin === true) });
             }
         })
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (auth.currentUser) {
-
-            if (prevState.dateQuery !== this.state.dateQuery || this.state.firstFetch) {
-                console.log('componentDidUpdate')
-
-                this.unSubscribe();
-                if (this.unSubscribeTaskSnapshot) {
-                    this.unSubscribeTaskSnapshot();
-                }
-                this.setState({ tasks: [] });
-                this.updateTasks();
-                this.setState({ firstFetch: false });
-            }
-        }
-    }
-
     componentWillUnmount() {
         this.unSubscribe();
-        this.unSubscribeTaskSnapshot();
     }
 
 
-    handleCompleteTask = (task) => {
+    handleCompleteTask = async (task) => {
         const func = (item) => {
             if (item === task) {
                 return { ...task, isCompleted: !task.isCompleted };
             }
             return item;
         };
-
         if (!task.isPin) {
             let tasks = this.state.tasks.map(func);
             this.setState({ tasks });
@@ -86,18 +48,17 @@ class PageDayTodo extends Component {
             let taskPins = this.state.taskPins.map(func);
             this.setState({ taskPins });
         }
-        console.log(task);
 
-
+        await updateTask({...task,isCompleted: !task.isCompleted});
     }
 
-    handleAddTask = (task) => {
-        // this.setState({ tasks: [task, ...this.state.tasks] });
-        addTask(task);
+    handleAddTask = async (task) => {
+        let taskRef = await addTask(task);
+        // let taskDoc = (await taskRef.get()).data();
+        this.setState({ tasks: [{ ...task, id: taskRef.id }, ...this.state.tasks] });
     }
 
-    handlePinTask = (task) => {
-        console.log('handle pink task')
+    handlePinTask = async (task) => {
         // if task is Pin toggle that
         if (task.isPin) {
             let taskPins = this.state.taskPins.filter(item => item !== task);
@@ -108,10 +69,11 @@ class PageDayTodo extends Component {
             this.setState({ tasks });
             this.setState({ taskPins: [{ ...task, isPin: !task.isPin }, ...this.state.taskPins] });
         }
+
+        await updateTask({...task, isPin: !task.isPin})
     }
 
-    handleDeleteTask = (task) => {
-        console.log('handle delete task');
+    handleDeleteTask = async (task) => {
         if (task.isPin) {
             let taskPins = this.state.taskPins.filter(item => item !== task);
             this.setState({ taskPins });
@@ -119,9 +81,22 @@ class PageDayTodo extends Component {
             let tasks = this.state.tasks.filter(item => item !== task);
             this.setState({ tasks });
         }
+
+        await deleteTask(task.id);
     }
 
-    handleChangeDateQuery = (dateQuery) => {
+    handleChangeDateQuery = async (dateQuery) => {
+        if (auth.currentUser) {
+            let taskDocs = await tasksContext()
+                .where('createdAt', '==', dateQuery)
+                .get();
+            let tasks = [];
+            for (let element of taskDocs.docs) {
+                tasks.push({ ...element.data(), id: element.id });
+            }
+            this.setState({ tasks: tasks.filter(t => t.isPin === false) });
+            this.setState({ taskPins: tasks.filter(t => t.isPin === true) });
+        }
         this.setState({ dateQuery });
     }
 

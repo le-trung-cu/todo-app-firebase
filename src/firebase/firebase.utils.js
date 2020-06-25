@@ -11,14 +11,14 @@ import "firebase/firestore";
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
-    apiKey: "AIzaSyB1NAMiSk3wIPe7B-7Jt5WZBZcVD9VnIb8",
-    authDomain: "todo-app-ba288.firebaseapp.com",
-    databaseURL: "https://todo-app-ba288.firebaseio.com",
-    projectId: "todo-app-ba288",
-    storageBucket: "todo-app-ba288.appspot.com",
-    messagingSenderId: "693925251734",
-    appId: "1:693925251734:web:be00b4f64fac501afd50b7",
-    measurementId: "G-FY4WVSFSY1"
+  apiKey: "AIzaSyB1NAMiSk3wIPe7B-7Jt5WZBZcVD9VnIb8",
+  authDomain: "todo-app-ba288.firebaseapp.com",
+  databaseURL: "https://todo-app-ba288.firebaseio.com",
+  projectId: "todo-app-ba288",
+  storageBucket: "todo-app-ba288.appspot.com",
+  messagingSenderId: "693925251734",
+  appId: "1:693925251734:web:be00b4f64fac501afd50b7",
+  measurementId: "G-FY4WVSFSY1"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -31,36 +31,57 @@ const firestore = firebase.firestore();
 
 export const auth = firebase.auth();
 
+export const signUp = (email, password) => auth.createUserWithEmailAndPassword(email, password);
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 export const signInWithEmailAndPassword = (email, pass) => auth.signInWithEmailAndPassword(email, pass);
-export const signOut = async () => {await auth.signOut(); console.log('..........sssssssssssss......')}
-
-export const addTask = (task) => {
-  if(!auth.currentUser) return;
-  firestore.collection(`users/${auth.currentUser.uid}/tasks`).add({task})
-}
+export const signOut = async () => { await auth.signOut(); console.log('..........sssssssssssss......') }
 
 export const tasksContext = () => firestore.collection(`users/${auth.currentUser.uid}/tasks`);
 
+export const addTask = async (task) => {
+  if (!auth.currentUser) return;
+  return await tasksContext().add(task)
+}
+
+export const updateTask = async (task) => {
+  if (!auth.currentUser) return;
+  let taskRef = tasksContext().doc(task.id);
+  if ((await taskRef.get()).exists) {
+    await taskRef.update(task);
+  } else {
+    throw new Error('task not exists');
+  }
+}
+
+export const deleteTask = async (taskId) => {
+  if(!auth.currentUser) return;
+  let taskRef = tasksContext().doc(taskId);
+  if ((await taskRef.get()).exists) {
+    await taskRef.delete();
+  } else {
+    throw new Error('task not exists');
+  }
+}
+
 export const createUserProfileDocument = async (userAuth, addtionalData) => {
-    if(!userAuth) return;
+  if (!userAuth) return;
 
-    const userRef = firestore.doc(`users/${userAuth.uid}`);
-    const userShot = await userRef.get();
-    if(!userShot.exists){
-        const { displayName, email } = userAuth;
-        const createdAt = new Date();
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+  const userShot = await userRef.get();
+  if (!userShot.exists) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
 
-        try {
-            await userRef.set({
-              displayName,
-              email,
-              createdAt,
-              ...addtionalData
-            })
-          } catch (error) {
-            console.log('error creating user', error.message);
-          }
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...addtionalData
+      })
+    } catch (error) {
+      console.log('error creating user', error.message);
     }
-    return userRef;
+  }
+  return userRef;
 }

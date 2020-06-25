@@ -4,15 +4,20 @@ import './input-add-task.styles.scss';
 const InputAddTask = ({ handleAddTask, dateQuery }) => {
 
     const [taskTitle, setTaskTitle] = useState('');
+    const [taskDescription, setTaskDescription] = useState('');
+
     const handelAddTaskSubmit = (event) => {
         event.preventDefault();
+
         handleAddTask({
             createdAt: dateQuery,
             isCompleted: false,
             title: taskTitle,
-            description: "one of my goals in 2017",
+            description: taskDescription,
             isPin: false
-        })
+        });
+        setTaskTitle('');
+        setTaskDescription('');
     }
     return (
         <form onSubmit={handelAddTaskSubmit} className="input-add-task"
@@ -22,7 +27,22 @@ const InputAddTask = ({ handleAddTask, dateQuery }) => {
                 name="taskTitle"
                 type="text"
                 placeholder="Add a task..."
+                value={taskTitle}
                 onChange={(event) => setTaskTitle(event.target.value)} />
+            {
+                (taskTitle || taskDescription) ?
+                    <React.Fragment>
+                        <textarea className="input-add-task__input input-add-task__input--description"
+                            name="taskDescription"
+                            type="text"
+                            value={taskDescription}
+                            placeholder="description"
+                            onChange={event => setTaskDescription(event.target.value)} />
+                        <button className="input-add-task__btn">Ok</button>
+                    </React.Fragment>
+                    : null
+            }
+
         </form>
     );
 };
