@@ -53,7 +53,7 @@ class SignIn extends Component {
                         onChange={this.handelInputChange} />
                     <div className="sign-in__row">
                         <button className="sign-in__btn">SIGN IN</button>
-                        <Link className="link-color" to='/sign-up'>Sign up?</Link>
+                        <Link className="link-color" to='/todo-app-firebase/sign-up'>Sign up?</Link>
                     </div>
                 </form>
                 <ButtonSingInWithGoogle />

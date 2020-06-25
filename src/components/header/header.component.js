@@ -9,21 +9,21 @@ const Header = ({ currentUser }) => {
             <nav className="navigation">
                 <ul className="navigation__list">
                     <li className="navigation__item">
-                        <Link className="navigation__link" to="/">Day</Link>
+                        <Link className="navigation__link" to="/todo-app-firebase/">Day</Link>
                     </li>
                     <li className="navigation__item">
-                        <a className="navigation__link navigation__link--disabled" href="">Week</a>
+                        <a className="navigation__link navigation__link--disabled" href="#">Week</a>
                     </li>
                     <li className="navigation__item navigation__item--disabled">
-                        <a className="navigation__link navigation__link--disabled" href="">Month</a>
+                        <a className="navigation__link navigation__link--disabled" href="#">Month</a>
                     </li>
                     <li className="navigation__item navigation__item--disabled">
-                        <a className="navigation__link navigation__link--disabled" href="">Year</a>
+                        <a className="navigation__link navigation__link--disabled" href="#">Year</a>
                     </li>
                     <li className="navigation__item">
                         {
                             currentUser ? <a className="navigation__link" onClick={signOut}>Sign Out</a>
-                                : <Link className="navigation__link" to="/sign-in">Sign In</Link>
+                                : <Link className="navigation__link" to="/todo-app-firebase/sign-in">Sign In</Link>
                         }
 
                     </li>

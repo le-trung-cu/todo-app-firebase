@@ -47,15 +47,15 @@ class App extends Component {
           <div className="app">
             <Header currentUser={this.state.currentUser} />
             <Switch>
-              <Route exact path='/'>
-                {!this.state.currentUser ? <Redirect to='/sign-in' /> : null}
+              <Route exact path='/todo-app-firebase'>
+                {!this.state.currentUser ? <Redirect to='/todo-app-firebase/sign-in' /> : null}
                 <PageDayTodo />
               </Route>
-              <Route exact path='/sign-in'>
-                {this.state.currentUser ? <Redirect to='/' /> : <SignIn />}
+              <Route exact path='/todo-app-firebase/sign-in'>
+                {this.state.currentUser ? <Redirect to='/todo-app-firebase' /> : <SignIn />}
               </Route>
-              <Route exact path='/sign-up'>
-                {this.state.currentUser ? <Redirect to='/' /> : <SignUp />}
+              <Route exact path='/todo-app-firebase/sign-up'>
+                {this.state.currentUser ? <Redirect to='/todo-app-firebase' /> : <SignUp />}
               </Route>
             </Switch>
           </div>
