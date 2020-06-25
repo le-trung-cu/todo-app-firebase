@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ce4452d21042c921065bdb761731e459",
+    "revision": "40a28210e3570479f8251b2ddedf8576",
     "url": "/todo-app-firebase/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/todo-app-firebase/static/css/2.93b3b32d.chunk.css"
   },
   {
-    "revision": "b9a21cc345995512971a",
+    "revision": "4275f7d41e59f4650e6b",
     "url": "/todo-app-firebase/static/css/main.fa6575a1.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/todo-app-firebase/static/js/2.004a1378.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "b9a21cc345995512971a",
-    "url": "/todo-app-firebase/static/js/main.e22fdd21.chunk.js"
+    "revision": "4275f7d41e59f4650e6b",
+    "url": "/todo-app-firebase/static/js/main.fe035292.chunk.js"
   },
   {
     "revision": "30dd62192aa8b3d635da",
